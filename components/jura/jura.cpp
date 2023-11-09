@@ -110,20 +110,12 @@ namespace esphome
     {
       ESP_LOGCONFIG(TAG, "Jura Component:");
       LOG_SENSOR("  ", "Counter - Espresso", this->sensor_espresso);
-      LOG_SENSOR("  ", "Counter - Espressi", this->sensor_espressi);
-      LOG_SENSOR("  ", "Counter - Ristretto", this->sensor_ristretto);
-      LOG_SENSOR("  ", "Counter - Ristretti", this->sensor_ristretti);
-      LOG_SENSOR("  ", "Counter - Coffee", this->sensor_big_coffee);
-      LOG_SENSOR("  ", "Counter - Coffees", this->sensor_double_big_coffee);
-      LOG_SENSOR("  ", "Counter - Coffee Powder", this->sensor_powder_coffee);
-
-      LOG_SENSOR("  ", "Counter - Cappuccino", this->sensor_cappuccino);
-      LOG_SENSOR("  ", "Counter - Latte Machiatto", this->sensor_latte_machiato);
-      LOG_SENSOR("  ", "Counter - Milk", this->sensor_milk);
+      LOG_SENSOR("  ", "Counter - Coffee", this->sensor_coffee);
+      LOG_SENSOR("  ", "Counter - Coffees", this->sensor_double_coffee);
+      LOG_SENSOR("  ", "Counter - Decaff Coffee", this->sensor_decaff_coffee);
       LOG_SENSOR("  ", "Counter - Water", this->sensor_water);
 
       LOG_SENSOR("  ", "Counter - Cleaning", this->sensor_cleaning);
-      LOG_SENSOR("  ", "Counter - Cappuccino Cleaning", this->sensor_cappucino_cleaning);
       LOG_SENSOR("  ", "Counter - Filters", this->sensor_filter);
 
       LOG_SENSOR("  ", "Status - Power", this->status_power);
@@ -167,31 +159,19 @@ namespace esphome
         return;
 
       case READ_EEPROM_0000:
-        uint16_t counter_espresso, counter_ristretto, counter_big_coffee, counter_cappuccino, counter_latte_machiato, counter_powder_coffee, counter_cleaning;
+        uint16_t counter_espresso, counter_coffee, counter_decaff_coffee, counter_cleaning;
         counter_espresso = this->get_16bit_uint(3);
-        counter_ristretto = this->get_16bit_uint(7);
-        counter_big_coffee = this->get_16bit_uint(11);
-        counter_cappuccino = this->get_16bit_uint(19);
-        counter_latte_machiato = this->get_16bit_uint(23);
-        counter_powder_coffee = this->get_16bit_uint(27);
+        counter_coffee = this->get_16bit_uint(11);
+        counter_decaff_coffee = this->get_16bit_uint(27);
         counter_cleaning = this->get_16bit_uint(39);
         if (sensor_espresso != nullptr) {
           sensor_espresso->publish_state(counter_espresso);
         }
-        if (sensor_ristretto != nullptr) {
-          sensor_ristretto->publish_state(counter_ristretto);
+        if (counter_coffee != nullptr) {
+          counter_coffee->publish_state(counter__coffee);
         }
-        if (sensor_big_coffee != nullptr) {
-          sensor_big_coffee->publish_state(counter_big_coffee);
-        }
-        if (sensor_cappuccino != nullptr) {
-          sensor_cappuccino->publish_state(counter_cappuccino);
-        }
-        if (sensor_latte_machiato != nullptr) {
-          sensor_latte_machiato->publish_state(counter_latte_machiato);
-        }
-        if (sensor_powder_coffee != nullptr) {
-          sensor_powder_coffee->publish_state(counter_powder_coffee);
+        if (sensor_decaff_coffee != nullptr) {
+          sensor_decaff_coffee->publish_state(counter_decaff_coffee);
         }
         if (sensor_cleaning != nullptr) {
           sensor_cleaning->publish_state(counter_cleaning);
@@ -199,42 +179,26 @@ namespace esphome
         return;
 
       case READ_EEPROM_0010:
-        uint16_t counter_milk, counter_water;
-        counter_milk = this->get_16bit_uint(15);
+        uint16_t counter_water;
         counter_water = this->get_16bit_uint(19);
-        if (sensor_milk != nullptr) {
-          sensor_milk->publish_state(counter_milk);
-        }
         if (sensor_water != nullptr) {
           sensor_water->publish_state(counter_water);
         }
         return;
 
       case READ_EEPROM_0020:
-        uint16_t counter_cappuccino_cleaning, counter_filter;
-        counter_cappuccino_cleaning = this->get_16bit_uint(7);
+        uint16_t counter_filter;
         counter_filter = this->get_16bit_uint(11);
-        if (sensor_cappucino_cleaning != nullptr) {
-          sensor_cappucino_cleaning->publish_state(counter_cappuccino_cleaning);
-        }
         if (sensor_filter != nullptr) {
           sensor_filter->publish_state(counter_filter);
         }
         return;
 
       case READ_EEPROM_00E0:
-        uint16_t counter_double_espressi, counter_double_ristretti, counter_double_big_coffee;
-        counter_double_espressi = this->get_16bit_uint(3);
-        counter_double_ristretti = this->get_16bit_uint(7);
-        counter_double_big_coffee = this->get_16bit_uint(11);
+        uint16_t counter_double__coffee;
+        counter_double__coffee = this->get_16bit_uint(11);
         if (sensor_espressi != nullptr) {
           sensor_espressi->publish_state(counter_double_espressi);
-        }
-        if (sensor_ristretti != nullptr) {
-          sensor_ristretti->publish_state(counter_double_ristretti);
-        }
-        if (sensor_double_big_coffee != nullptr) {
-          sensor_double_big_coffee->publish_state(counter_double_big_coffee);
         }
         return;
 
@@ -249,13 +213,9 @@ namespace esphome
     {
       this->set_update_interval(60000);
       register_service(&JuraComponent::on_turnoff, "turnoff");
-      register_service(&JuraComponent::on_press_ristreto, "press_ristreto");
       register_service(&JuraComponent::on_press_espresso, "press_espresso");
       register_service(&JuraComponent::on_press_coffee, "press_coffee");
-      register_service(&JuraComponent::on_press_cappuccino, "press_cappuccino");
-      register_service(&JuraComponent::on_press_latte, "press_latte");
       register_service(&JuraComponent::on_press_hotwater, "press_hotwater");
-      register_service(&JuraComponent::on_press_milk, "press_milk");
       register_service(&JuraComponent::on_press_flush, "press_flush");
     }
 
@@ -288,11 +248,6 @@ namespace esphome
       this->send_command_(COMMAND, "FA:01");
     }
 
-    void JuraComponent::on_press_ristreto()
-    {
-      this->send_command_(COMMAND, "FA:05");
-    }
-
     void JuraComponent::on_press_espresso()
     {
       this->send_command_(COMMAND, "FA:03");
@@ -303,24 +258,9 @@ namespace esphome
       this->send_command_(COMMAND, "FA:04");
     }
 
-    void JuraComponent::on_press_cappuccino()
-    {
-      this->send_command_(COMMAND, "FA:06");
-    }
-
-    void JuraComponent::on_press_latte()
-    {
-      this->send_command_(COMMAND, "FA:07");
-    }
-
     void JuraComponent::on_press_hotwater()
     {
       this->send_command_(COMMAND, "FA:08");
-    }
-
-    void JuraComponent::on_press_milk()
-    {
-      this->send_command_(COMMAND, "FA:09");
     }
 
     void JuraComponent::on_press_flush()
@@ -328,54 +268,24 @@ namespace esphome
       this->send_command_(COMMAND, "FA:02");
     }
 
-    void JuraComponent::set_ristretto_sensor(sensor::Sensor *ristretto_sensor)
-    {
-      sensor_ristretto = ristretto_sensor;
-    }
-
-    void JuraComponent::set_ristretti_sensor(sensor::Sensor *ristretti_sensor)
-    {
-      sensor_ristretti = ristretti_sensor;
-    }
-
     void JuraComponent::set_espresso_sensor(sensor::Sensor *espresso_sensor)
     {
       sensor_espresso = espresso_sensor;
     }
 
-    void JuraComponent::set_espressi_sensor(sensor::Sensor *espressi_sensor)
-    {
-      sensor_espressi = espressi_sensor;
-    }
-
     void JuraComponent::set_coffee_sensor(sensor::Sensor *coffee_sensor)
     {
-      sensor_big_coffee = coffee_sensor;
+      counter_coffee = coffee_sensor;
     }
 
     void JuraComponent::set_double_coffee_sensor(sensor::Sensor *double_coffee_sensor)
     {
-      sensor_double_big_coffee = double_coffee_sensor;
+      sensor_double_coffee = double_coffee_sensor;
     }
 
-    void JuraComponent::set_powder_coffee_sensor(sensor::Sensor *powder_coffee_sensor)
+    void JuraComponent::set_decaff_coffee_sensor(sensor::Sensor *powder_decaff_sensor)
     {
-      sensor_powder_coffee = powder_coffee_sensor;
-    }
-
-    void JuraComponent::set_cappuccino_sensor(sensor::Sensor *cappuccino_sensor)
-    {
-      sensor_cappuccino = cappuccino_sensor;
-    }
-
-    void JuraComponent::set_latte_machiato_sensor(sensor::Sensor *latte_machiato_sensor)
-    {
-      sensor_latte_machiato = latte_machiato_sensor;
-    }
-
-    void JuraComponent::set_milk_sensor(sensor::Sensor *milk_sensor)
-    {
-      sensor_milk = milk_sensor;
+      sensor_decaff_coffee = decaff_coffee_sensor;
     }
 
     void JuraComponent::set_water_sensor(sensor::Sensor *water_sensor)
@@ -386,11 +296,6 @@ namespace esphome
     void JuraComponent::set_cleaning_sensor(sensor::Sensor *cleaning_sensor)
     {
       sensor_cleaning = cleaning_sensor;
-    }
-
-    void JuraComponent::set_cappuccino_cleaning_sensor(sensor::Sensor *cappuccino_cleaning_sensor)
-    {
-      sensor_cappucino_cleaning = cappuccino_cleaning_sensor;
     }
 
     void JuraComponent::set_water_filter_sensor(sensor::Sensor *water_filter_sensor)

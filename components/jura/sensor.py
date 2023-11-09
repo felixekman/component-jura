@@ -20,19 +20,12 @@ DEPENDENCIES = ["uart"]
 jura_ns = cg.esphome_ns.namespace("jura")
 JuraComponent = jura_ns.class_("JuraComponent", uart.UARTDevice, cg.Component)
 
-CONF_RISTRETTO = "ristretto"
-CONF_RISTRETTI = "ristretti"
 CONF_ESPRESSO = "espresso"
-CONF_ESPRESSI = "espressi"
 CONF_COFFEE = "coffee"
 CONF_DOUBLE_COFFEE = "double_coffee"
-CONF_POWDER_COFFEE = "powder_coffee"
-CONF_CAPPUCCINO = "cappuccino"
-CONF_LATTE_MACHIATO = "latte_machiato"
-CONF_MILK = "milk"
+CONF_DECAFF_COFFEE = "decaff_coffee"
 CONF_WATER = "water"
 CONF_CLEANING = "cleaning"
-CONF_CAPPUCCINO_CLEANING = "cappuccino_cleaning"
 CONF_WATER_FILTER = "water_filter"
 CONF_RINSING = "rinsing"
 CONF_TRAY = "tray"
@@ -43,28 +36,7 @@ CONFIG_SCHEMA = (
     cv.Schema(
         {
             cv.GenerateID(): cv.declare_id(JuraComponent),
-            cv.Optional(CONF_RISTRETTO): sensor.sensor_schema(
-                unit_of_measurement=UNIT_EMPTY,
-                icon=ICON_COUNTER,
-                accuracy_decimals=0,
-                device_class=DEVICE_CLASS_EMPTY,
-                state_class=STATE_CLASS_TOTAL_INCREASING,
-            ),
-            cv.Optional(CONF_RISTRETTI): sensor.sensor_schema(
-                unit_of_measurement=UNIT_EMPTY,
-                icon=ICON_COUNTER,
-                accuracy_decimals=0,
-                device_class=DEVICE_CLASS_EMPTY,
-                state_class=STATE_CLASS_TOTAL_INCREASING,
-            ),
             cv.Optional(CONF_ESPRESSO): sensor.sensor_schema(
-                unit_of_measurement=UNIT_EMPTY,
-                icon=ICON_COUNTER,
-                accuracy_decimals=0,
-                device_class=DEVICE_CLASS_EMPTY,
-                state_class=STATE_CLASS_TOTAL_INCREASING,
-            ),
-            cv.Optional(CONF_ESPRESSI): sensor.sensor_schema(
                 unit_of_measurement=UNIT_EMPTY,
                 icon=ICON_COUNTER,
                 accuracy_decimals=0,
@@ -85,28 +57,7 @@ CONFIG_SCHEMA = (
                 device_class=DEVICE_CLASS_EMPTY,
                 state_class=STATE_CLASS_TOTAL_INCREASING,
             ),
-            cv.Optional(CONF_POWDER_COFFEE): sensor.sensor_schema(
-                unit_of_measurement=UNIT_EMPTY,
-                icon=ICON_COUNTER,
-                accuracy_decimals=0,
-                device_class=DEVICE_CLASS_EMPTY,
-                state_class=STATE_CLASS_TOTAL_INCREASING,
-            ),
-            cv.Optional(CONF_CAPPUCCINO): sensor.sensor_schema(
-                unit_of_measurement=UNIT_EMPTY,
-                icon=ICON_COUNTER,
-                accuracy_decimals=0,
-                device_class=DEVICE_CLASS_EMPTY,
-                state_class=STATE_CLASS_TOTAL_INCREASING,
-            ),
-            cv.Optional(CONF_LATTE_MACHIATO): sensor.sensor_schema(
-                unit_of_measurement=UNIT_EMPTY,
-                icon=ICON_COUNTER,
-                accuracy_decimals=0,
-                device_class=DEVICE_CLASS_EMPTY,
-                state_class=STATE_CLASS_TOTAL_INCREASING,
-            ),
-            cv.Optional(CONF_MILK): sensor.sensor_schema(
+            cv.Optional(CONF_DECAFF_COFFEE): sensor.sensor_schema(
                 unit_of_measurement=UNIT_EMPTY,
                 icon=ICON_COUNTER,
                 accuracy_decimals=0,
@@ -121,13 +72,6 @@ CONFIG_SCHEMA = (
                 state_class=STATE_CLASS_TOTAL_INCREASING,
             ),
             cv.Optional(CONF_CLEANING): sensor.sensor_schema(
-                unit_of_measurement=UNIT_EMPTY,
-                icon=ICON_COUNTER,
-                accuracy_decimals=0,
-                device_class=DEVICE_CLASS_EMPTY,
-                state_class=STATE_CLASS_TOTAL_INCREASING,
-            ),
-            cv.Optional(CONF_CAPPUCCINO_CLEANING): sensor.sensor_schema(
                 unit_of_measurement=UNIT_EMPTY,
                 icon=ICON_COUNTER,
                 accuracy_decimals=0,
@@ -188,21 +132,9 @@ async def to_code(config):
     await cg.register_component(var, config)
     await uart.register_uart_device(var, config)
 
-    if CONF_RISTRETTO in config:
-        sens = await sensor.new_sensor(config[CONF_RISTRETTO])
-        cg.add(var.set_ristretto_sensor(sens))
-
-    if CONF_RISTRETTI in config:
-        sens = await sensor.new_sensor(config[CONF_RISTRETTI])
-        cg.add(var.set_ristretti_sensor(sens))
-
     if CONF_ESPRESSO in config:
         sens = await sensor.new_sensor(config[CONF_ESPRESSO])
         cg.add(var.set_espresso_sensor(sens))
-
-    if CONF_ESPRESSI in config:
-        sens = await sensor.new_sensor(config[CONF_ESPRESSI])
-        cg.add(var.set_espressi_sensor(sens))
 
     if CONF_COFFEE in config:
         sens = await sensor.new_sensor(config[CONF_COFFEE])
@@ -212,21 +144,9 @@ async def to_code(config):
         sens = await sensor.new_sensor(config[CONF_DOUBLE_COFFEE])
         cg.add(var.set_double_coffee_sensor(sens))
 
-    if CONF_POWDER_COFFEE in config:
-        sens = await sensor.new_sensor(config[CONF_POWDER_COFFEE])
+    if CONF_DECAFF_COFFEE in config:
+        sens = await sensor.new_sensor(config[CONF_DECAFF_COFFEE])
         cg.add(var.set_powder_coffee_sensor(sens))
-
-    if CONF_CAPPUCCINO in config:
-        sens = await sensor.new_sensor(config[CONF_CAPPUCCINO])
-        cg.add(var.set_cappuccino_sensor(sens))
-
-    if CONF_LATTE_MACHIATO in config:
-        sens = await sensor.new_sensor(config[CONF_LATTE_MACHIATO])
-        cg.add(var.set_latte_machiato_sensor(sens))
-
-    if CONF_MILK in config:
-        sens = await sensor.new_sensor(config[CONF_MILK])
-        cg.add(var.set_milk_sensor(sens))
 
     if CONF_WATER in config:
         sens = await sensor.new_sensor(config[CONF_WATER])
@@ -235,10 +155,6 @@ async def to_code(config):
     if CONF_CLEANING in config:
         sens = await sensor.new_sensor(config[CONF_CLEANING])
         cg.add(var.set_cleaning_sensor(sens))
-
-    if CONF_CAPPUCCINO_CLEANING in config:
-        sens = await sensor.new_sensor(config[CONF_CAPPUCCINO_CLEANING])
-        cg.add(var.set_cappuccino_cleaning_sensor(sens))
 
     if CONF_WATER_FILTER in config:
         sens = await sensor.new_sensor(config[CONF_WATER_FILTER])
