@@ -1,0 +1,13 @@
+esphome:
+  name: "Jura Integration"
+dependencies: []
+codeowners: []
+component: true
+
+api:
+  services:
+    - service: turnoff
+    - service: press_espresso
+    - service: press_coffee
+    - service: press_hotwater
+    - service: press_flush
