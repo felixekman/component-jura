@@ -77,30 +77,18 @@ class JuraComponent : public PollingComponent,
 // This tells ESPHome what options "jura:" can take in YAML,
 // and maps each YAML key to the corresponding setter above.
 static const auto JURA_SCHEMA = esphome::ComponentSchema("jura")
-  .AddOptional<&JuraComponent::set_espresso_sensor>(
-    "espresso_sensor", sensor::SensorSchema())
-  .AddOptional<&JuraComponent::set_coffee_sensor>(
-    "coffee_sensor", sensor::SensorSchema())
-  .AddOptional<&JuraComponent::set_double_coffee_sensor>(
-    "double_coffee_sensor", sensor::SensorSchema())
-  .AddOptional<&JuraComponent::set_powder_coffee_sensor>(
-    "decaff_coffee_sensor", sensor::SensorSchema())
-  .AddOptional<&JuraComponent::set_water_sensor>(
-    "water_sensor", sensor::SensorSchema())
-  .AddOptional<&JuraComponent::set_cleaning_sensor>(
-    "cleaning_sensor", sensor::SensorSchema())
-  .AddOptional<&JuraComponent::set_water_filter_sensor>(
-    "water_filter_sensor", sensor::SensorSchema())
-  .AddOptional<&JuraComponent::set_power_sensor>(
-    "power_sensor", sensor::SensorSchema())
-  .AddOptional<&JuraComponent::set_rinsing_sensor>(
-    "rinsing_sensor", sensor::SensorSchema())
-  .AddOptional<&JuraComponent::set_tray_sensor>(
-    "tray_sensor", sensor::SensorSchema())
-  .AddOptional<&JuraComponent::set_water_tank_sensor>(
-    "water_tank_sensor", sensor::SensorSchema())
-  .AddOptional<&JuraComponent::set_coffee_ground_sensor>(
-    "coffee_ground_sensor", sensor::SensorSchema())
+  .AddOptional<&JuraComponent::set_espresso_sensor>("espresso_sensor", sensor::SensorSchema())
+  .AddOptional<&JuraComponent::set_coffee_sensor>("coffee_sensor",   sensor::SensorSchema())
+  .AddOptional<&JuraComponent::set_double_coffee_sensor>("double_coffee_sensor", sensor::SensorSchema())
+  .AddOptional<&JuraComponent::set_powder_coffee_sensor>("decaff_coffee_sensor", sensor::SensorSchema())
+  .AddOptional<&JuraComponent::set_water_sensor>("water_sensor", sensor::SensorSchema())
+  .AddOptional<&JuraComponent::set_cleaning_sensor>("cleaning_sensor", sensor::SensorSchema())
+  .AddOptional<&JuraComponent::set_water_filter_sensor>("water_filter_sensor", sensor::SensorSchema())
+  .AddOptional<&JuraComponent::set_power_sensor>("power_sensor", sensor::SensorSchema())
+  .AddOptional<&JuraComponent::set_rinsing_sensor>("rinsing_sensor", sensor::SensorSchema())
+  .AddOptional<&JuraComponent::set_tray_sensor>("tray_sensor", sensor::SensorSchema())
+  .AddOptional<&JuraComponent::set_water_tank_sensor>("water_tank_sensor", sensor::SensorSchema())
+  .AddOptional<&JuraComponent::set_coffee_ground_sensor>("coffee_ground_sensor", sensor::SensorSchema())
   .Extend();
 
 ESPHOME_DEFINE_COMPONENT(JuraComponent, JURA_SCHEMA);
