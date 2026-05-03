@@ -6,7 +6,7 @@
 #include "esphome/components/sensor/sensor.h"
 
 // For component schema definitions
-#include "esphome/core/components.h"
+#include "esphome/core/component.h"
 #include "esphome/core/defines.h"
 
 namespace esphome {
